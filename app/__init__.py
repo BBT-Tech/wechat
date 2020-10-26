@@ -28,7 +28,8 @@ def register_errorhandler(app: Flask):
 
 
 def register_blueprints(app: Flask):
-    pass
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(offiaccount_bp)
 
 
 def register_extensions(app: Flask):

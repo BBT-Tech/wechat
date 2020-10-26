@@ -43,7 +43,7 @@ class WeChatConfig:
     @classmethod
     def get_access_token_url(cls, code):
         """
-        通过 code 换取网页授权access_token
+        通过 code 换取网页授权 access_token
         https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html
         GET https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code
 
@@ -55,7 +55,7 @@ class WeChatConfig:
     @classmethod
     def check_access_token_url(cls, access_token, openid):
         """
-        判断 access_token 有效性
+        判断用户授权的 access_token 有效性
         https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html
         GET https://api.weixin.qq.com/sns/auth?access_token=ACCESS_TOKEN&openid=OPENID
 
@@ -66,9 +66,9 @@ class WeChatConfig:
         return f'{cls.API_BASE_URL}/sns/auth?access_token={access_token}&openid={openid}'
 
     @classmethod
-    def refresh_access_token_url(cls, refresh_token):
+    def refresh_user_access_token_url(cls, refresh_token):
         """
-        刷新 access_token
+        刷新用户授权的 access_token
         https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html
         GET https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=APPID&grant_type=refresh_token&refresh_token=REFRESH_TOKEN
 
@@ -102,6 +102,41 @@ class WeChatConfig:
         """
 
         return f'{cls.API_BASE_URL}/cgi-bin/user/info?access_token={access_token}&openid={openid}&lang=zh_CN'
+
+    @classmethod
+    def refresh_access_token_url(cls):
+        """
+        刷新微信公众号的 access_token
+        https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_access_token.html
+        GET https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET
+        """
+
+        return f'{cls.API_BASE_URL}/cgi-bin/token?grant_type=client_credential&appid={cls.APP_ID}&secret={cls.APP_SECRET}'
+
+    @classmethod
+    def get_jsapi_ticket(cls, access_token):
+        """
+        获取 jsapi_ticket
+        https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html#62
+        GET https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=jsapi
+
+        :param access_token: 微信公众号的 access_token
+        """
+
+        return f'https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={access_token}&type=jsapi'
+
+    @classmethod
+    def get_media_url(cls, access_token, media_id):
+        """
+        下载多媒体文件
+        https://developers.weixin.qq.com/doc/offiaccount/Asset_Management/Get_temporary_materials.html
+        GET https://api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID
+
+        :param access_token: 微信公众号的 access_token
+        :param media_id: 前端传来的媒体文件ID
+        """
+
+        return f'https://api.weixin.qq.com/cgi-bin/media/get?access_token={access_token}&media_id={media_id}'
 
 
 class AppConfig:

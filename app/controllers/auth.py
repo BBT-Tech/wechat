@@ -49,6 +49,7 @@ def get_access_token():
 
     return redirect(state)
 
+
 @auth_bp.route('/user')
 def get_user_info():
     """

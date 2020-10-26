@@ -85,7 +85,7 @@ class CurrentUser(object):
         :return 新的 access_token
         """
 
-        resp = requests.get(WeChatConfig.refresh_access_token_url(self.refresh_token))
+        resp = requests.get(WeChatConfig.refresh_user_access_token_url(self.refresh_token))
         data: dict = resp.json()
 
         manage_wechat_error(data, [40030], '刷新 access_token 失败')  # refresh_token过期
