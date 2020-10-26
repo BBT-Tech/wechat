@@ -1,23 +1,18 @@
 """
 配置文件
 需要修改的数据
-BaseConfig:
-    base_url
-WeChatConfig:
-    APP_ID
-    APP_SECRET
 AppConfig:
     SECRET_KEY
     REDIS_URL
+WeChatConfig:
+    APP_ID
+    APP_SECRET
 """
 
 
-class BaseConfig:
-    # 后端部署后的 baseurl
-    base_url = 'https://api.zekaio.cn/wechat'
-
-    # 用户授权登录后跳转到的接口地址
-    redirect_uri = f'{base_url}/auth/code'
+class AppConfig:
+    SECRET_KEY = '123456'
+    REDIS_URL = 'redis://localhost:6379/0'  # redis地址
 
 
 class WeChatConfig:
@@ -28,7 +23,7 @@ class WeChatConfig:
     OAUTH_BASE_URL = "https://open.weixin.qq.com/connect"
 
     @classmethod
-    def auth_url(cls, state, scope='snsapi_userinfo', redirect_uri=BaseConfig.redirect_uri):
+    def auth_url(cls, state, redirect_uri, scope='snsapi_userinfo'):
         """
         微信授权链接
         https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html
@@ -137,8 +132,3 @@ class WeChatConfig:
         """
 
         return f'https://api.weixin.qq.com/cgi-bin/media/get?access_token={access_token}&media_id={media_id}'
-
-
-class AppConfig:
-    SECRET_KEY = '123456'
-    REDIS_URL = 'redis://localhost:6379/0'  # redis地址
