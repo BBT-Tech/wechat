@@ -69,16 +69,25 @@ class OfficialAccount(object):
         https://developers.weixin.qq.com/doc/offiaccount/User_Management/Get_users_basic_information_UnionID.html#UinonId
         GET https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN
         """
+
         user = CurrentUser()
         resp = requests.get(WeChatConfig.get_sub_user_info_url(self.access_token, user.openid))
 
         return resp.json()
 
-    def refresh_token(self):
+    @staticmethod
+    def refresh_token():
         """
         刷新 access_token
         https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_access_token.html
-
+        GET https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET
         """
 
-        pass
+        resp = requests.get(WeChatConfig.refresh_access_token_url())
+        data: dict = resp.json()
+
+        manage_wechat_error(data, [], '刷新 access_token 失败')
+
+        redis_client.set('access_token', data.get('access_token'), ex=data.get('expires_in'))
+
+        return data.get('access_token')
