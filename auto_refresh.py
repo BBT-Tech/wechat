@@ -3,7 +3,7 @@
 """
 from apscheduler.schedulers.blocking import BlockingScheduler
 import os
-import datetime
+import logging
 
 from app import create_app
 from app.models import OfficialAccount
@@ -11,11 +11,6 @@ from app.extends.error import HttpError
 
 app = create_app()
 official_account = OfficialAccount()
-
-
-def logger(msg: str):
-    with open('./logs/refresh_error.log', 'a', encoding='utf-8') as f:
-        f.write(f'{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")} {msg} \n')
 
 
 def main():
@@ -27,9 +22,9 @@ def main():
             official_account.refresh_token()
             official_account.refresh_jsapi_ticket()
         except HttpError as e:
-            logger(str(e.to_dict()))
+            logging.error(str(e.to_dict()))
         except Exception as e:
-            logger(str(e))
+            logging.error(str(e))
 
 
 if __name__ == '__main__':

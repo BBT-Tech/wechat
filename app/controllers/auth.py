@@ -21,7 +21,7 @@ def login():
 
     state = request.args.get('state')
 
-    return redirect(WeChatConfig.auth_url(state, f'{request.url_root}auth/code'))
+    return redirect(WeChatConfig.auth_url(state))
 
 
 @auth_bp.route('/code')
