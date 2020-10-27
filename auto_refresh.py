@@ -3,6 +3,7 @@
 """
 from apscheduler.schedulers.blocking import BlockingScheduler
 import os
+import datetime
 
 from app import create_app
 from app.models import OfficialAccount
@@ -14,7 +15,7 @@ official_account = OfficialAccount()
 
 def logger(msg: str):
     with open('./logs/refresh_error.log', 'a', encoding='utf-8') as f:
-        f.write(msg + '\n')
+        f.write(f'{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")} {msg} \n')
 
 
 def main():
