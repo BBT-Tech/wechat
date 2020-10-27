@@ -8,4 +8,4 @@ import typing
 
 cors = CORS(supports_credentials=True)
 
-redis_client: typing.Union[StrictRedis, FlaskRedis] = FlaskRedis()
+redis_client: typing.Union[StrictRedis, FlaskRedis] = FlaskRedis(charset="utf-8", decode_responses=True)

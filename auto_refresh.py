@@ -37,5 +37,5 @@ if __name__ == '__main__':
         os.makedirs('logs')
     main()
     scheduler = BlockingScheduler()
-    scheduler.add_job(main, 'interval', hours=2)
+    scheduler.add_job(main, 'interval', seconds=7130)
     scheduler.start()
