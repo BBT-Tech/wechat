@@ -10,6 +10,14 @@ def get_jsapi_ticket() -> str:
     return redis_client.get(RedisConfig.Key.jsapi_ticket)
 
 
+def get_access_token() -> str:
+    """
+    从 redis 中获取 access_token
+    """
+
+    return redis_client.get(RedisConfig.Key.access_token)
+
+
 def set_jsapi_ticket(ticket, ex=None):
     """
     将 jsapi ticket 存入 redis 中
@@ -19,14 +27,6 @@ def set_jsapi_ticket(ticket, ex=None):
     """
 
     redis_client.set(RedisConfig.Key.jsapi_ticket, ticket, ex=ex - 60 if ex else ex)
-
-
-def get_access_token() -> str:
-    """
-    从 redis 中获取 access_token
-    """
-
-    return redis_client.get(RedisConfig.Key.access_token)
 
 
 def set_access_token(access_token, ex=None):

@@ -59,7 +59,17 @@ def get_user_info():
     :return: {
         "status": 200,
         "msg": "OK",
-        "data": userinfo
+        "data": {
+            "city": "广州",
+            "country": "中国",
+            "headimgurl": "https://thirdwx.qlogo.cn/mmopen/vi_32/sGgFEwic8uUbjEDMexnwOvVyia1UU23ITZJjjUbZSd7PwKciammPwOUIRibk07u4vsx9Y52kYRA47edjCia4NVHIYFg/132",
+            "language": "zh_CN",
+            "nickname": "lzk",
+            "openid": "OPENID",
+            "privilege": [],
+            "province": "广东",
+            "sex": 1
+        }
     }
     """
 
@@ -71,7 +81,7 @@ def get_user_info():
 @auth_bp.route('/user/openid')
 def get_user_openid():
     """
-    如果只需要获取用户的openid就请求这个接口，返回session中的openid
+    获取用户的openid
 
     :return: {
         "status": 200,
@@ -84,4 +94,4 @@ def get_user_openid():
 
     user = CurrentUser()
 
-    return user.openid
+    return Result.data(user.openid).build()

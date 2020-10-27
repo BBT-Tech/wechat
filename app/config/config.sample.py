@@ -19,7 +19,7 @@ from urllib.parse import quote
 
 class AppConfig:
     SECRET_KEY = '123456'
-    SESSION_COOKIE_NAME = 'bbt_wechat_session'
+    SESSION_COOKIE_NAME = 'bbt_wechat_session'  # 修改session在cookie中的名字，避免与其他应用冲突
     REDIS_URL = 'redis://localhost:6379/0'  # redis地址
 
 

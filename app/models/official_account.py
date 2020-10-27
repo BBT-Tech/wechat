@@ -46,7 +46,7 @@ class OfficialAccount(object):
     @property
     def user_info(self) -> dict:
         """
-        关注公众号的用户的信息
+        关注公众号的用户的信息，相比于网页授权获取的信息更加详细
         https://developers.weixin.qq.com/doc/offiaccount/User_Management/Get_users_basic_information_UnionID.html#UinonId
         {
             "subscribe": 1,
@@ -69,12 +69,12 @@ class OfficialAccount(object):
         }
         """
 
-        data, errcode = self.get_user_info()
+        data, errcode = self.get_subscribe_user_info()
 
         if errcode is not None:
             if errcode == 40014:  # access_token无效
                 self.refresh_token()
-                data, errcode = self.get_user_info()
+                data, errcode = self.get_subscribe_user_info()
 
             if errcode == 40003:  # openid不属于该公众号或用户未关注
                 raise HttpError(403, '请先关注公众号')
@@ -104,7 +104,7 @@ class OfficialAccount(object):
             'appid': WeChatConfig.APP_ID
         }
 
-    def get_user_info(self) -> typing.Tuple[dict, str]:
+    def get_subscribe_user_info(self) -> typing.Tuple[dict, str]:
         """
         获取关注公众号的用户的信息
         https://developers.weixin.qq.com/doc/offiaccount/User_Management/Get_users_basic_information_UnionID.html#UinonId
@@ -112,7 +112,7 @@ class OfficialAccount(object):
         """
 
         user = CurrentUser()
-        resp = requests.get(WeChatConfig.get_sub_user_info_url(self.access_token, user.openid))
+        resp = requests.get(WeChatConfig.get_subscribe_user_info_url(self.access_token, user.openid))
         data: dict = json.loads(resp.content)
 
         return data, data.get('errcode')
@@ -169,6 +169,35 @@ class OfficialAccount(object):
         """
         下载多媒体文件
         https://developers.weixin.qq.com/doc/offiaccount/Asset_Management/Get_temporary_materials.html
+
+        :param media_id: 前端传来的媒体文件ID
+        """
+
+        resp, content_type = self.get_media_resp(media_id)
+
+        if content_type == 'application/json' or content_type == 'text/plain':  # Content-Type 不是媒体类型，说明请求出错，判断错误码
+            data: dict = json.loads(resp.content)
+            if data.get('errcode') == 40014:  # access_token过期
+                self.refresh_token()
+                resp, content_type = self.get_media_resp(media_id)
+                if content_type == 'application/json' or content_type == 'text/plain':
+                    data: dict = json.loads(resp.content)
+            if data.get('errcode') == 40007:  # 不合法的媒体文件id
+                raise HttpError(400, 'media_id无效')
+
+            manage_wechat_error(data, [], '下载媒体文件失败')
+
+        encoded_media = base64.b64encode(io.BytesIO(resp.content).read()).decode('ascii')
+
+        return {
+            'media_data': encoded_media,
+            'content_type': resp.headers.get('Content-Type')
+        }
+
+    def get_media_resp(self, media_id) -> typing.Tuple[requests.Response, str]:
+        """
+        发送下载多媒体文件请求
+        https://developers.weixin.qq.com/doc/offiaccount/Asset_Management/Get_temporary_materials.html
         GET https://api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID
 
         :param media_id: 前端传来的媒体文件ID
@@ -176,21 +205,4 @@ class OfficialAccount(object):
 
         resp = requests.get(WeChatConfig.get_media_url(self.access_token, media_id))
 
-        if resp.headers.get('Content-Type') == 'application/json':  # TODO: 未测试，如果Content-Type是json表示请求出错
-            data: dict = json.loads(resp.content)
-            if data.get('errcode') == 40014:  # access_token过期
-                self.refresh_token()
-                resp = requests.get(WeChatConfig.get_media_url(self.access_token, media_id))
-                if resp.headers.get('Content-Type') == 'application/json':  # TODO: 未测试，如果Content-Type是json表示请求出错
-                    data: dict = json.loads(resp.content)
-            if data.get('errcode') == 40007:  # 不合法的媒体文件id
-                raise HttpError(400, 'media_id无效')
-
-            manage_wechat_error(data, [], '下载媒体文件失败')
-
-        encoded_media = base64.b64encode(io.BytesIO(resp.content).read())
-
-        return {
-            'data': encoded_media,
-            'content_type': resp.headers.get('Content-Type')
-        }
+        return resp, resp.headers.get('Content-Type')
