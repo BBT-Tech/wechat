@@ -12,15 +12,12 @@ import typing
 
 from app.models import CurrentUser
 from app.config import WeChatConfig
-from app.extensions import redis_client
 from app.extends.helper import manage_wechat_error
 from app.extends.error import HttpError
+from app.services import database
 
 
 class OfficialAccount(object):
-    def __init__(self):
-        pass
-
     @property
     def access_token(self):
         """
@@ -28,7 +25,7 @@ class OfficialAccount(object):
         https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_access_token.html
         """
 
-        access_token = redis_client.get('access_token')
+        access_token = database.get_access_token()
         if access_token is None:
             return self.refresh_token()
         return access_token
@@ -40,7 +37,7 @@ class OfficialAccount(object):
         https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html#62
         """
 
-        ticket = redis_client.get('jsapi_ticket')
+        ticket = database.get_jsapi_ticket()
         if ticket is None:
             return self.refresh_jsapi_ticket()
         return ticket
@@ -143,7 +140,7 @@ class OfficialAccount(object):
 
         manage_wechat_error(data, [], '刷新 access_token 失败')
 
-        redis_client.set('access_token', data.get('access_token'), ex=data.get('expires_in') - 10)
+        database.set_access_token(data.get('access_token', data.get('expires_in')))
 
         return data.get('access_token')
 
@@ -163,7 +160,7 @@ class OfficialAccount(object):
 
             manage_wechat_error(data, [], '获取 jsapi_ticket 失败')
 
-        redis_client.set('jsapi_ticket', data.get('ticket'), ex=data.get('expires_in') - 10)
+        database.set_jsapi_ticket(data.get('ticket'), data.get('expires_in'))
 
         return data.get('ticket')
 

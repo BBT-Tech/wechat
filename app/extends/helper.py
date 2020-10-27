@@ -34,5 +34,4 @@ def manage_wechat_error(data: dict, login_codes: list, msg: str):
         raise HttpError(401, '请先登录微信')
 
     logger(msg, data)
-    raise HttpError(400, f'{msg}, {data.get("errcode")}')
-    # raise HttpError(400, f'{msg} {data}') # 将data返回前端，仅供测试
+    raise HttpError(400, msg, data)

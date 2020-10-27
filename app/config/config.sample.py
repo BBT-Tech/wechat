@@ -4,6 +4,10 @@
 AppConfig:
     SECRET_KEY
     REDIS_URL
+RedisConfig:
+    Key:
+        jsapi_ticket
+        access_token
 WeChatConfig:
     APP_ID
     APP_SECRET
@@ -14,6 +18,13 @@ from urllib.parse import quote
 class AppConfig:
     SECRET_KEY = '123456'
     REDIS_URL = 'redis://localhost:6379/0'  # redis地址
+
+
+class RedisConfig:
+    # 保存在 redis 中的键名
+    class Key:
+        jsapi_ticket = 'flask:wechat:jsapi_ticket'
+        access_token = 'flask:wechat:access_token'
 
 
 class WeChatConfig:
