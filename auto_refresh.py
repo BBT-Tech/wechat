@@ -2,7 +2,6 @@
 自动刷新 access_token 和 jsapi_ticket
 """
 from apscheduler.schedulers.blocking import BlockingScheduler
-import os
 import logging
 
 from app import create_app
@@ -28,8 +27,6 @@ def main():
 
 
 if __name__ == '__main__':
-    if not os.path.exists('./logs/'):
-        os.makedirs('logs')
     main()
     scheduler = BlockingScheduler()
     scheduler.add_job(main, 'interval', seconds=7130)
