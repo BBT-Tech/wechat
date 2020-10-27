@@ -105,7 +105,7 @@ class WeChatConfig:
         return f'{cls.API_BASE_URL}/sns/userinfo?access_token={access_token}&openid={openid}&lang=zh_CN'
 
     @classmethod
-    def get_sub_user_info_url(cls, access_token, openid):
+    def get_subscribe_user_info_url(cls, access_token, openid):
         """
         获取关注公众号的用户的信息
         https://developers.weixin.qq.com/doc/offiaccount/User_Management/Get_users_basic_information_UnionID.html#UinonId

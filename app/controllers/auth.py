@@ -4,7 +4,6 @@ import requests
 from app.config.config import WeChatConfig
 from app.extends.helper import manage_wechat_error
 from app.models import CurrentUser
-from app.extends.result import Result
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -54,28 +53,25 @@ def get_access_token():
 def get_user_info():
     """
     获取用户信息
-    https://developers.weixin.qq.com/doc/offiaccount/User_Management/Get_users_basic_information_UnionID.html#UinonId
+    https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html
+    GET https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN
 
     :return: {
-        "status": 200,
-        "msg": "OK",
-        "data": {
-            "city": "广州",
-            "country": "中国",
-            "headimgurl": "https://thirdwx.qlogo.cn/mmopen/vi_32/sGgFEwic8uUbjEDMexnwOvVyia1UU23ITZJjjUbZSd7PwKciammPwOUIRibk07u4vsx9Y52kYRA47edjCia4NVHIYFg/132",
-            "language": "zh_CN",
-            "nickname": "lzk",
-            "openid": "OPENID",
-            "privilege": [],
-            "province": "广东",
-            "sex": 1
-        }
+        "city": "广州",
+        "country": "中国",
+        "headimgurl": "https://thirdwx.qlogo.cn/mmopen/vi_32/sGgFEwic8uUbjEDMexnwOvVyia1UU23ITZJjjUbZSd7PwKciammPwOUIRibk07u4vsx9Y52kYRA47edjCia4NVHIYFg/132",
+        "language": "zh_CN",
+        "nickname": "lzk",
+        "openid": "OPENID",
+        "privilege": [],
+        "province": "广东",
+        "sex": 1
     }
     """
 
     user = CurrentUser()
 
-    return Result.data(user.info).build()
+    return user.info
 
 
 @auth_bp.route('/user/openid')
@@ -84,14 +80,10 @@ def get_user_openid():
     获取用户的openid
 
     :return: {
-        "status": 200,
-        "msg": "OK",
-        "data": {
-            "openid": "OPENID"
-        }
+        "openid": "OPENID"
     }
     """
 
     user = CurrentUser()
 
-    return Result.data(user.openid).build()
+    return {'openid': user.openid}

@@ -39,20 +39,20 @@ class CurrentUser(object):
     def info(self) -> dict:
         """
         获取用户信息
-        https://developers.weixin.qq.com/doc/offiaccount/User_Management/Get_users_basic_information_UnionID.html#UinonId
-        GET https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN
+        https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html
+        GET https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN
 
         :return 用户信息
         {
+            "city": "广州",
+            "country": "中国",
+            "headimgurl": "https://thirdwx.qlogo.cn/mmopen/vi_32/sGgFEwic8uUbjEDMexnwOvVyia1UU23ITZJjjUbZSd7PwKciammPwOUIRibk07u4vsx9Y52kYRA47edjCia4NVHIYFg/132",
+            "language": "zh_CN",
+            "nickname": "lzk",
             "openid": "OPENID",
-            "nickname": "NICKNAME",
-            "sex": "1",
-            "province": "PROVINCE",
-            "city": "CITY",
-            "country": "COUNTRY",
-            "headimgurl": "https://headimg.url",
-            "privilege": ["PRIVILEGE1", "PRIVILEGE2"],
-            "unionid": "UNIONID"
+            "privilege": [],
+            "province": "广东",
+            "sex": 1
         }
         """
 
