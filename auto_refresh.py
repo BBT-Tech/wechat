@@ -24,8 +24,8 @@ def main():
     """
     with app.app_context():
         try:
-            official_account.refresh_jsapi_ticket()
             official_account.refresh_token()
+            official_account.refresh_jsapi_ticket()
         except HttpError as e:
             logger(str(e.to_dict()))
         except Exception as e:
