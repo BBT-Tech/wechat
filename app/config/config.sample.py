@@ -8,6 +8,7 @@ WeChatConfig:
     APP_ID
     APP_SECRET
 """
+from urllib.parse import quote
 
 
 class AppConfig:
@@ -33,7 +34,7 @@ class WeChatConfig:
         :param redirect_uri: 用户同意授权后携带 code 和 state 请求的后端接口
         """
 
-        return f'{cls.OAUTH_BASE_URL}/oauth2/authorize?appid={cls.APP_ID}&redirect_uri={redirect_uri}&response_type=code&scope={scope}&state={state}#wechat_redirect'
+        return f'{cls.OAUTH_BASE_URL}/oauth2/authorize?appid={cls.APP_ID}&redirect_uri={quote(redirect_uri, safe="")}&response_type=code&scope={scope}&state={state}#wechat_redirect'
 
     @classmethod
     def get_access_token_url(cls, code):

@@ -14,7 +14,7 @@ def create_app() -> Flask:
     register_errorhandler(app)
     register_blueprints(app)
     register_extensions(app)
-    register_middleware(app)
+    # register_middleware(app)
 
     return app
 

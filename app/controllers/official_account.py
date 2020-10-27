@@ -24,6 +24,7 @@ def get_jssdk_config_data():
         }
     }
     """
+
     url = request.get_json(force=True).get('url')
 
     if url is None:
