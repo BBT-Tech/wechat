@@ -19,6 +19,7 @@ from urllib.parse import quote
 
 class AppConfig:
     SECRET_KEY = '123456'
+    SESSION_COOKIE_NAME = 'bbt_wechat_session'
     REDIS_URL = 'redis://localhost:6379/0'  # redis地址
 
 
@@ -51,7 +52,7 @@ class WeChatConfig:
         :param redirect_uri: 用户同意授权后携带 code 和 state 请求的后端接口
         """
 
-        return f'{cls.OAUTH_BASE_URL}/oauth2/authorize?appid={cls.APP_ID}&redirect_uri={quote(redirect_uri if redirect_uri else BaseConfig.base_url+"/auth/code", safe="")}&response_type=code&scope={scope}&state={state}#wechat_redirect'
+        return f'{cls.OAUTH_BASE_URL}/oauth2/authorize?appid={cls.APP_ID}&redirect_uri={quote(redirect_uri if redirect_uri else BaseConfig.base_url + "/auth/code", safe="")}&response_type=code&scope={scope}&state={state}#wechat_redirect'
 
     @classmethod
     def get_access_token_url(cls, code):

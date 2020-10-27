@@ -9,6 +9,7 @@ import hashlib
 import base64
 import io
 import typing
+import json
 
 from app.models import CurrentUser
 from app.config import WeChatConfig
@@ -112,7 +113,7 @@ class OfficialAccount(object):
 
         user = CurrentUser()
         resp = requests.get(WeChatConfig.get_sub_user_info_url(self.access_token, user.openid))
-        data = resp.json()
+        data: dict = json.loads(resp.content)
 
         return data, data.get('errcode')
 
@@ -125,7 +126,7 @@ class OfficialAccount(object):
 
         resp = requests.get(WeChatConfig.get_jsapi_ticket(self.access_token))
 
-        return resp.json()
+        return json.loads(resp.content)
 
     @staticmethod
     def refresh_token():
@@ -136,7 +137,7 @@ class OfficialAccount(object):
         """
 
         resp = requests.get(WeChatConfig.refresh_access_token_url())
-        data: dict = resp.json()
+        data: dict = json.loads(resp.content)
 
         manage_wechat_error(data, [], '刷新 access_token 失败')
 
@@ -176,12 +177,12 @@ class OfficialAccount(object):
         resp = requests.get(WeChatConfig.get_media_url(self.access_token, media_id))
 
         if resp.headers.get('Content-Type') == 'application/json':  # TODO: 未测试，如果Content-Type是json表示请求出错
-            data: dict = resp.json()
+            data: dict = json.loads(resp.content)
             if data.get('errcode') == 40014:  # access_token过期
                 self.refresh_token()
                 resp = requests.get(WeChatConfig.get_media_url(self.access_token, media_id))
                 if resp.headers.get('Content-Type') == 'application/json':  # TODO: 未测试，如果Content-Type是json表示请求出错
-                    data: dict = resp.json()
+                    data: dict = json.loads(resp.content)
             if data.get('errcode') == 40007:  # 不合法的媒体文件id
                 raise HttpError(400, 'media_id无效')
 

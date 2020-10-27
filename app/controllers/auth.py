@@ -64,4 +64,24 @@ def get_user_info():
     """
 
     user = CurrentUser()
+
     return Result.data(user.info).build()
+
+
+@auth_bp.route('/user/openid')
+def get_user_openid():
+    """
+    如果只需要获取用户的openid就请求这个接口，返回session中的openid
+
+    :return: {
+        "status": 200,
+        "msg": "OK",
+        "data": {
+            "openid": "OPENID"
+        }
+    }
+    """
+
+    user = CurrentUser()
+
+    return user.openid

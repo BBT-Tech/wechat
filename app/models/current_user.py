@@ -4,6 +4,7 @@
 
 from flask import session
 import requests
+import json
 
 from app.config import WeChatConfig
 from app.extends.error import HttpError
@@ -56,7 +57,7 @@ class CurrentUser(object):
         """
 
         resp = requests.get(WeChatConfig.get_user_info_url(self.access_token, self.openid))
-        data: dict = resp.json()
+        data: dict = json.loads(resp.content)
 
         manage_wechat_error(data, [40003, 40014], '获取用户信息失败')  # 不合法的 openid 或 access_token
 
@@ -71,8 +72,8 @@ class CurrentUser(object):
         :return 有效则返回 True，否则返回 False
         """
 
-        resp = requests.get(WeChatConfig.check_access_token_url(self.access_token, self.openid))
-        data: dict = resp.json()
+        resp = requests.get(WeChatConfig.check_access_token_url(session.get('access_token'), self.openid))
+        data: dict = json.loads(resp.content)
 
         return data.get('errcode') == 0
 
@@ -86,7 +87,7 @@ class CurrentUser(object):
         """
 
         resp = requests.get(WeChatConfig.refresh_user_access_token_url(self.refresh_token))
-        data: dict = resp.json()
+        data: dict = json.loads(resp.content)
 
         manage_wechat_error(data, [40030], '刷新 access_token 失败')  # refresh_token过期
 
