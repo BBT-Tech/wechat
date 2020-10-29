@@ -141,7 +141,7 @@ class OfficialAccount(object):
 
         manage_wechat_error(data, [], '刷新 access_token 失败')
 
-        database.set_access_token(data.get('access_token', data.get('expires_in')))
+        database.set_access_token(data.get('access_token'), data.get('expires_in'))
 
         return data.get('access_token')
 
